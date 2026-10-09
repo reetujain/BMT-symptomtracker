@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Transplant Symptom Check</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <div>
+        <div class="app-title">My Transplant Symptom Check</div>
+        <div class="app-subtitle" id="hospitalName"></div>
+      </div>
+      <a class="call-pill" id="topCallBtn" href="#">Call BMT Team</a>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ============ SETUP SCREEN (first time) ============ -->
+    <section id="screen-setup" class="screen hidden">
+      <h1>Welcome</h1>
+      <p class="lead">Please fill this once. Your nurse or doctor can help you.</p>
+
+      <form id="setupForm" class="card">
+        <label for="patientName">Your name</label>
+        <input type="text" id="patientName" placeholder="Example: Ramesh Kumar" required>
+
+        <label for="transplantDate">Date of your transplant (Day 0)</label>
+        <input type="date" id="transplantDate" required>
+
+        <label for="teamPhone">BMT team phone number (day and night)</label>
+        <input type="tel" id="teamPhone" placeholder="Example: +91 98765 43210" required>
+
+        <label for="teamWhatsapp">BMT team WhatsApp number (optional)</label>
+        <input type="tel" id="teamWhatsapp" placeholder="Leave empty if not used">
+
+        <label for="emergencyPhone">Emergency / ambulance number</label>
+        <input type="tel" id="emergencyPhone" placeholder="Example: 108 or 112">
+
+        <label for="tempUnit">I measure temperature in</label>
+        <select id="tempUnit">
+          <option value="C">Celsius (°C) – example 37.0</option>
+          <option value="F">Fahrenheit (°F) – example 98.6</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary btn-big">Save</button>
+      </form>
+    </section>
+
+    <!-- ============ HOME SCREEN ============ -->
+    <section id="screen-home" class="screen hidden">
+      <div class="card day-card">
+        <div class="hello" id="helloText">Hello</div>
+        <div class="day-number" id="dayNumber">Day +0</div>
+        <div class="day-note" id="dayNote">after your transplant</div>
+      </div>
+
+      <div class="emergency-box">
+        <strong>Do not wait. Call the BMT team at once if you have:</strong>
+        <ul>
+          <li>Fever – temperature <span class="fever-text">38.0 °C</span> or more</li>
+          <li>Shivering or shaking chills</li>
+          <li>Trouble breathing or chest pain</li>
+          <li>Bleeding that does not stop</li>
+          <li>Fainting, confusion or a fit (seizure)</li>
+        </ul>
+        <a class="btn btn-red btn-big" id="homeCallBtn" href="#">Call BMT Team Now</a>
+      </div>
+
+      <button class="btn btn-primary btn-big" data-go="check">Start today's symptom check</button>
+      <button class="btn btn-light btn-big" data-go="history">My past reports</button>
+      <button class="btn btn-light" data-go="setup">Change my details</button>
+
+      <p class="small-note">Please do this check every day, and any time you feel unwell.</p>
+    </section>
+
+    <!-- ============ SYMPTOM CHECK SCREEN ============ -->
+    <section id="screen-check" class="screen hidden">
+      <h1>How are you today?</h1>
+      <p class="lead">Tick everything you have <strong>now</strong> or have had <strong>since your last check</strong>.</p>
+
+      <form id="checkForm">
+        <div class="card">
+          <h2>1. Your temperature</h2>
+          <label for="tempValue">Measure your temperature now and write it here</label>
+          <div class="temp-row">
+            <input type="number" id="tempValue" step="0.1" inputmode="decimal" placeholder="37.0">
+            <span class="temp-unit" id="tempUnitLabel">°C</span>
+          </div>
+          <label class="check-line">
+            <input type="checkbox" id="noThermometer">
+            <span>I do not have a thermometer / I could not measure</span>
+          </label>
+        </div>
+
+        <!-- Symptom groups are added here by app.js -->
+        <div id="questionArea"></div>
+
+        <div class="card">
+          <h2>Anything else?</h2>
+          <label for="notes">Write anything else you want the team to know (optional)</label>
+          <textarea id="notes" rows="3" placeholder="Example: I feel more tired since yesterday"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-big">See my result</button>
+        <button type="button" class="btn btn-light" data-go="home">Cancel</button>
+      </form>
+    </section>
+
+    <!-- ============ RESULT SCREEN ============ -->
+    <section id="screen-result" class="screen hidden">
+      <div id="resultCard" class="result-card">
+        <div class="result-label" id="resultLabel"></div>
+        <div class="result-title" id="resultTitle"></div>
+        <div class="result-text" id="resultText"></div>
+      </div>
+
+      <div id="resultActions"></div>
+
+      <div class="card">
+        <h2>What you told us</h2>
+        <ul id="resultList" class="symptom-list"></ul>
+      </div>
+
+      <div class="card">
+        <h2>Send this report to the BMT team</h2>
+        <p>When you call, you can read this out. Or send it as a message.</p>
+        <pre id="reportText" class="report-text"></pre>
+        <button class="btn btn-light" id="copyBtn">Copy report</button>
+        <a class="btn btn-green-dark hidden" id="whatsappBtn" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+        <a class="btn btn-light" id="smsBtn" href="#">Send as SMS</a>
+      </div>
+
+      <button class="btn btn-primary btn-big" data-go="home">Back to home</button>
+    </section>
+
+    <!-- ============ HISTORY SCREEN ============ -->
+    <section id="screen-history" class="screen hidden">
+      <h1>My past reports</h1>
+      <p class="lead">Show this to your doctor at your clinic visit.</p>
+      <div id="historyList"></div>
+      <button class="btn btn-light" id="printBtn">Print my reports</button>
+      <button class="btn btn-light" id="clearBtn">Delete all reports</button>
+      <button class="btn btn-primary btn-big" data-go="home">Back to home</button>
+    </section>
+
+    <p class="disclaimer">
+      This tool helps you decide when to contact your BMT team. It does not replace your doctor.
+      <strong>If you are worried, always call – even if the result is green.</strong>
+      Your information is saved only on this phone or computer.
+    </p>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
